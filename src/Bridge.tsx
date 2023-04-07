@@ -1,156 +1,119 @@
-import { useState } from 'react';
-import {Wallet} from "@qingyang-id/zkbnb-l1-sdk";
+import {useState} from 'react';
+import {Wallet} from "@bnb-chain/zkbnb-js-l1-sdk";
 import {ethers} from "ethers";
+import L2Client from "./l2Client";
 
 interface BridgingProps {
-  zkWallet: Wallet,
-  wallet: string
+    zkWallet: Wallet,
+    l2Client: L2Client,
+    walletAddress: string
 }
 
-const Bridge = ({zkWallet, wallet}: BridgingProps) => {
-  // withdrawals
-  const [preparingWithdrawals, setPreparingWithdrawals] = useState(Object);
-  const [readyWithdrawals, setReadyWithdrawals] = useState(Object);
-  const [completedWithdrawals, setCompletedWithdrawals] = useState(Object);
-  // eth
-  const [depositAmount, setDepositAmount] = useState('');
-  const [prepareAmount, setPrepareAmount] = useState('');
-  // nft
-  const [depositTokenId, setDepositTokenId] = useState('');
-  const [depositTokenAddress, setDepositTokenAddress] = useState('');
-  const [prepareTokenId, setPrepareTokenId] = useState('');
-  const [prepareTokenAddress, setPrepareTokenAddress] = useState('');
-  const [completeTokenId, setCompleteTokenId] = useState('');
-  const [completeTokenAddress, setCompleteTokenAddress] = useState('');
+const Bridge = ({zkWallet, l2Client, walletAddress}: BridgingProps) => {
+    // bnb
+    const [depositAmount, setDepositAmount] = useState('');
+    const [withdrawalAmount, setWithdrawalAmount] = useState('');
+    // nft
+    const [depositCollectionId, setDepositCollectionId] = useState('');
+    const [depositTokenId, setDepositTokenId] = useState('');
+    const [depositTokenAddress, setDepositTokenAddress] = useState('');
+    const [withdrawalCollectionId, setWithdrawalCollectionId] = useState('');
+    const [withdrawalTokenId, setWithdrawalTokenId] = useState('');
+    const [withdrawalTokenAddress, setWithdrawalTokenAddress] = useState('');
 
-  // deposit an NFT
-  async function depositNFT() {
-    await zkWallet.depositNFT({
-      to: wallet,
-      tokenId: depositTokenId,
-      tokenAddress: depositTokenAddress
-    })
-  };
+    // deposit bnb
+    async function depositBNB() {
+        await zkWallet.deposit({
+            to: walletAddress,
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            amount: ethers.utils.parseEther(depositAmount),
+        })
+    };
 
-  // deposit eth
-  async function depositBNB() {
-    await zkWallet.deposit({
-      to: wallet,
-      tokenAddress: '0x0000000000000000000000000000000000000000',
-      amount: ethers.utils.parseEther(depositAmount),
-    })
-  };
+    // withdrawal bnb
+    async function withdrawalBNB() {
+        await l2Client.withdraw(withdrawalAmount, 0, walletAddress)
+    };
 
-  // prepare an NFT withdrawal
-  async function prepareWithdrawalNFT() {
-  };
+    // deposit an NFT
+    async function depositNFT() {
+        await zkWallet.depositNFT({
+            to: walletAddress,
+            tokenId: depositTokenId,
+            tokenAddress: depositTokenAddress
+        })
+    };
 
-  // prepare an eth withdrawal
-  async function prepareWithdrawalBNB() {
-  };
+    async function withdrawalNFT() {
+        await l2Client.withdrawNFT(Number(withdrawalTokenId), walletAddress)
+    };
 
-  // complete an NFT withdrawal
-  async function completeWithdrawalNFT() {
-  };
-
-  // complete an eth withdrawal
-  async function completeWithdrawalBNB() {
-  };
-
-  return (
-    <div>
-      <div>
-        BNB:
-        <br/><br/>
+    return (
         <div>
-          Deposit BNB:
-          <br/>
-          <label>
-            Amount (BNB):
-            <input type="text" value={depositAmount} onChange={e => setDepositAmount(e.target.value)} />
-          </label>
-          <button onClick={depositBNB}>Deposit BNB</button>
+            <div>
+                BNB:
+                <br/><br/>
+                <div>
+                    Deposit BNB:
+                    <br/>
+                    <label>
+                        Amount (BNB):
+                        <input type="text" value={depositAmount} onChange={e => setDepositAmount(e.target.value)}/>
+                    </label>
+                    <button onClick={depositBNB}>Deposit BNB</button>
+                </div>
+                <br/><br/>
+                <div>
+                    Withdrawal BNB:
+                    <br/>
+                    <label>
+                        Amount (BNB):
+                        <input type="text" value={withdrawalAmount}
+                               onChange={e => setWithdrawalAmount(e.target.value)}/>
+                    </label>
+                    <button onClick={withdrawalBNB}>Withdrawal BNB</button>
+                </div>
+            </div>
+            <br/>
+            <div>
+                ERC721:
+                <br/><br/>
+                <div>
+                    Deposit NFT:
+                    <br/>
+                    <label>
+                        Collection ID:
+                        <input type="text" value={depositCollectionId} onChange={e => setDepositCollectionId(e.target.value)}/>
+                    </label>
+                    <label>
+                        Token ID:
+                        <input type="text" value={depositTokenId} onChange={e => setDepositTokenId(e.target.value)}/>
+                    </label>
+                    <label>
+                        Token Address:
+                        <input type="text" value={depositTokenAddress}
+                               onChange={e => setDepositTokenAddress(e.target.value)}/>
+                    </label>
+                    <button onClick={depositNFT}>Deposit NFT</button>
+                </div>
+                <br/><br/>
+                <div>
+                    Withdrawal NFT:
+                    <br/>
+                    <label>
+                        Collection ID:
+                        <input type="text" value={withdrawalCollectionId} onChange={e => setWithdrawalCollectionId(e.target.value)}/>
+                    </label>
+                    <label>
+                        Token ID:
+                        <input type="text" value={withdrawalTokenId}
+                               onChange={e => setWithdrawalTokenId(e.target.value)}/>
+                    </label>
+                    <button onClick={withdrawalNFT}>Withdrawal NFT</button>
+                </div>
+            </div>
         </div>
-        <br/><br/>
-        <div>
-          Prepare BNB for withdrawal (submit to be rolled up and confirmed on chain in the next batch):
-          <br/>
-          <label>
-            Amount (BNB):
-            <input type="text" value={prepareAmount} onChange={e => setPrepareAmount(e.target.value)} />
-          </label>
-          <button onClick={prepareWithdrawalBNB}>Prepare BNB Withdrawal</button>
-        </div>
-        <br/><br/>
-        <div>
-          Complete BNB withdrawal (withdraws entire eth balance that is ready for withdrawal to L1 wallet):
-          <br/>
-          <button onClick={completeWithdrawalBNB}>Complete BNB Withdrawal</button>
-        </div>
-      </div>
-      <br/>
-      <div>
-        ERC721:
-        <br/><br/>
-        <div>
-          Deposit NFT:
-          <br/>
-          <label>
-            Token ID:
-            <input type="text" value={depositTokenId} onChange={e => setDepositTokenId(e.target.value)} />
-          </label>
-          <label>
-            Token Address:
-            <input type="text" value={depositTokenAddress} onChange={e => setDepositTokenAddress(e.target.value)} />
-          </label>
-          <button onClick={depositNFT}>Deposit NFT</button>
-        </div>
-        <br/><br/>
-        <div>
-          Prepare NFT for withdrawal (submit to be rolled up and confirmed on chain in the next batch):
-          <br/>
-          <label>
-            Token ID:
-            <input type="text" value={prepareTokenId} onChange={e => setPrepareTokenId(e.target.value)} />
-          </label>
-          <label>
-            Token Address:
-            <input type="text" value={prepareTokenAddress} onChange={e => setPrepareTokenAddress(e.target.value)} />
-          </label>
-          <button onClick={prepareWithdrawalNFT}>Prepare NFT Withdrawal</button>
-        </div>
-        <br/><br/>
-        <div>
-          Complete NFT withdrawal (withdraws single NFT that is ready for withdrawal to L1 wallet):
-          <br/>
-          <label>
-            Token ID:
-            <input type="text" value={completeTokenId} onChange={e => setCompleteTokenId(e.target.value)} />
-          </label>
-          <label>
-            Token Address:
-            <input type="text" value={completeTokenAddress} onChange={e => setCompleteTokenAddress(e.target.value)} />
-          </label>
-          <button onClick={completeWithdrawalNFT}>Complete NFT Withdrawal</button>
-        </div>
-      </div>
-      <br/><br/><br/>
-      <div>
-        Withdrawals being prepared:
-        {JSON.stringify(preparingWithdrawals)}
-      </div>
-      <br/><br/>
-      <div>
-        Ready for withdrawal:
-        {JSON.stringify(readyWithdrawals)}
-      </div>
-      <br/><br/>
-      <div>
-        Withdrawn to wallet:
-        {JSON.stringify(completedWithdrawals)}
-      </div>
-    </div>
-  );
+    );
 }
 
 export default Bridge;
