@@ -41,9 +41,8 @@ export default class L2Client {
         if (network === 'bsc') {
             this.client = new Client('https://api.zkbnbchain.org')
         } else if (network === 'bscTestnet') {
-            // this.client = new Client('https://api-testnet.zkbnbchain.org')
-            this.client = new Client('https://devapi-zkbnb.nschail.com')
-        }else {
+            this.client = new Client('https://api-testnet.zkbnbchain.org')
+        } else {
             throw new Error(`BSC network ${network} is not supported`);
         }
     }
@@ -115,7 +114,7 @@ export default class L2Client {
         const {nonce} = await this.client.getNextNonce(accountIndex)
         const gasAccount = await this.client.getGasAccount()
         const pubKey = await this.getPublicKey(this.seed)
-        const gasFee = await this.client.getGasFee({assetId: 0, txType })
+        const gasFee = await this.client.getGasFee({assetId: 0, txType})
 
         const tx = {
             ...txInfo,
