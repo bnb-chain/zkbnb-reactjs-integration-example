@@ -1,10 +1,12 @@
 # zkBNB integration example
 This is a skeleton React app for the purpose of providing code examples for building a marketplace on zkBNB. It covers:
-- View sell orders and buying NFTs
-- View zkBNB inventory and BNB balance
-- Creating and cancelling sell orders
-- Minting on zkBNB
-- Depositing and withdrawing BNB,ERC20 and NFTs
+- [x] View wallet L1 And L2 BNB balance
+- [x] Depositing and withdrawing BNB and NFTs
+- [] Depositing and withdrawing BEP20
+- [] Create collection on zkBNB
+- [] Minting NFT on zkBNB
+- [] View sell orders and buying NFTs
+- [] Creating and cancelling sell orders
 
 
 ## Available Scripts
