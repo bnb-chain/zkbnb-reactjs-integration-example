@@ -2,28 +2,35 @@
   "name": "zkbnb-reactjs-integration-example",
   "version": "0.0.1",
   "license": "MIT",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "format": "prettier --write './**/*.{ts,js,tsx}'",
+    "lint": "npm run format && eslint  --ext .js,.ts,.tsx --fix",
+    "pre-commit": "npm run lint"
+  },
   "dependencies": {
     "@bnb-chain/zkbnb-js-l1-sdk": "^1.0.1",
     "@bnb-chain/zkbnb-js-sdk": "^4.4.1",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
+    "ethers": "^5.4.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
     "@types/node": "^16.18.23",
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
-    "ethers": "^5.4.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "eslint": "^8.38.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.1",
+    "prettier": "^2.8.7",
+    "react-scripts": "^5.0.1",
+    "typescript": "^4.9.5"
   },
   "browserslist": {
     "production": [
@@ -36,24 +43,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.57.1",
-    "@typescript-eslint/parser": "^5.57.1",
-    "eslint": "^8.21.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.2.1",
-    "prettier": "^2.8.7"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "format": "prettier --write './**/*.{ts,js}'",
-    "lint": "npm run format && eslint  --ext .js,.ts --fix",
-    "pre-commit": "npm run lint"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
