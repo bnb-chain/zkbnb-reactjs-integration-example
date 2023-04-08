@@ -1,5 +1,5 @@
 # zkBNB integration example
-This is a skeleton React app for the purpose of providing code examples for building a marketplace on zkBNB. It covers:
+This is a skeleton React app for the purpose of providing code examples for using zkBNB. It covers:
 - [x] View wallet L1 And L2 BNB balance
 - [x] Depositing and withdrawing BNB and NFTs
 - [] Depositing and withdrawing BEP20
