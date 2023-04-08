@@ -13,11 +13,11 @@ This is a skeleton React app for the purpose of providing code examples for usin
 
 In the project directory, you can run:
 
-### `yarn install`
+### `npm install`
 
 This downloads and installs the required packages.
 
-### `npx yarn start`
+### `npm start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
