@@ -14,12 +14,9 @@ const Bridge = ({zkWallet, l2Client, walletAddress}: BridgingProps) => {
     const [depositAmount, setDepositAmount] = useState('');
     const [withdrawalAmount, setWithdrawalAmount] = useState('');
     // nft
-    const [depositCollectionId, setDepositCollectionId] = useState('');
     const [depositTokenId, setDepositTokenId] = useState('');
     const [depositTokenAddress, setDepositTokenAddress] = useState('');
-    const [withdrawalCollectionId, setWithdrawalCollectionId] = useState('');
     const [withdrawalTokenId, setWithdrawalTokenId] = useState('');
-    const [withdrawalTokenAddress, setWithdrawalTokenAddress] = useState('');
 
     // deposit bnb
     async function depositBNB() {
@@ -54,7 +51,7 @@ const Bridge = ({zkWallet, l2Client, walletAddress}: BridgingProps) => {
                 BNB:
                 <br/><br/>
                 <div>
-                    Deposit BNB:
+                    Bridge BNB From L1 To L2:
                     <br/>
                     <label>
                         Amount (BNB):
@@ -64,7 +61,7 @@ const Bridge = ({zkWallet, l2Client, walletAddress}: BridgingProps) => {
                 </div>
                 <br/><br/>
                 <div>
-                    Withdrawal BNB:
+                    Withdrawal BNB From L2 To L1:
                     <br/>
                     <label>
                         Amount (BNB):
@@ -75,35 +72,29 @@ const Bridge = ({zkWallet, l2Client, walletAddress}: BridgingProps) => {
                 </div>
             </div>
             <br/>
+            <br/>
+            <br/>
             <div>
                 ERC721:
                 <br/><br/>
                 <div>
-                    Deposit NFT:
+                    Deposit NFT From L1 To L2:
                     <br/>
-                    <label>
-                        Collection ID:
-                        <input type="text" value={depositCollectionId} onChange={e => setDepositCollectionId(e.target.value)}/>
-                    </label>
-                    <label>
-                        Token ID:
-                        <input type="text" value={depositTokenId} onChange={e => setDepositTokenId(e.target.value)}/>
-                    </label>
                     <label>
                         Token Address:
                         <input type="text" value={depositTokenAddress}
                                onChange={e => setDepositTokenAddress(e.target.value)}/>
                     </label>
+                    <label>
+                        Token ID:
+                        <input type="text" value={depositTokenId} onChange={e => setDepositTokenId(e.target.value)}/>
+                    </label>
                     <button onClick={depositNFT}>Deposit NFT</button>
                 </div>
                 <br/><br/>
                 <div>
-                    Withdrawal NFT:
+                    Withdrawal NFT From L2 To L1:
                     <br/>
-                    <label>
-                        Collection ID:
-                        <input type="text" value={withdrawalCollectionId} onChange={e => setWithdrawalCollectionId(e.target.value)}/>
-                    </label>
                     <label>
                         Token ID:
                         <input type="text" value={withdrawalTokenId}

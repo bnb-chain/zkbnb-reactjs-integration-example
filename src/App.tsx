@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react';
 import Bridge from './Bridge';
 import {BigNumber, ethers} from "ethers";
 import L2Client from "./l2Client";
+import {Network} from "@bnb-chain/zkbnb-js-l1-sdk/dist/types";
 
 const App = () => {
     // initialise SDK
@@ -34,22 +35,24 @@ const App = () => {
         setWalletAddress(await minter.getAddress())
         const l1Balance = ethers.utils.formatEther(await minter.getBalance())
         setL1Balance(l1Balance.toString())
-        // const zkProvider = await getZkBNBDefaultProvider('bscTestnet');
-        const zkProvider = await Provider.newHttpProvider('https://devapi-zkbnb.nschail.com');
-        const zkWallet = await Wallet.fromZkBNBSigner(minter, zkProvider);
-        setZkWallet(zkWallet)
-        setZkProvider(zkProvider)
 
-        // init l2 client
-        let network = 'bsc'
+        let network: Network = 'bsc'
         if (provider.network.chainId === 97) {
+            // bsc testnet
             network = 'bscTestnet'
         } else if (provider.network.chainId === 56) {
+            // bsc mainnet
             network = 'bsc'
         } else {
             alert('Unsupported network')
             return
         }
+        const zkProvider = await getZkBNBDefaultProvider(network);
+        const zkWallet = await Wallet.fromZkBNBSigner(minter, zkProvider);
+        setZkWallet(zkWallet)
+        setZkProvider(zkProvider)
+
+        // init l2 client
         await L2Client.getInstance().init(zkWallet, network)
         await setL2Client(L2Client.getInstance())
         await updateAccountByInterval()
@@ -141,7 +144,7 @@ const App = () => {
             <div>
                 BNB L2 Balance (in wei): {l2Balance}
             </div>
-            <button onClick={() => setTab('bridge')}>Bridge</button>
+            { tab !== 'bridge' && <button onClick={() => setTab('bridge')}>Bridge</button>}
             <br/><br/><br/>
             {handleTabs()}
         </div>
