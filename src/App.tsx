@@ -1,8 +1,8 @@
 import './App.css';
 import {Wallet, getZkBNBDefaultProvider, Provider} from '@bnb-chain/zkbnb-js-l1-sdk';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import Bridge from './Bridge';
-import {BigNumber, ethers} from "ethers";
+import {ethers} from "ethers";
 import L2Client from "./l2Client";
 import {Network} from "@bnb-chain/zkbnb-js-l1-sdk/dist/types";
 
