@@ -5,6 +5,7 @@ This is a skeleton React app for the purpose of providing code examples for usin
 - [] Depositing and withdrawing BEP20
 - [] Create collection on zkBNB
 - [] Minting NFT on zkBNB
+- [] Transfer NFT on zkBNB
 - [] View sell orders and buying NFTs
 - [] Creating and cancelling sell orders
 
