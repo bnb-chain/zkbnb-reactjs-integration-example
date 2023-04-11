@@ -3,9 +3,9 @@ This is a skeleton React app for the purpose of providing code examples for usin
 - [x] View wallet L1 And L2 BNB balance
 - [x] Depositing and withdrawing BNB and NFTs
 - [] Depositing and withdrawing BEP20
-- [] Create collection on zkBNB
-- [] Minting NFT on zkBNB
-- [] Transfer NFT on zkBNB
+- [x] Create collection on zkBNB
+- [x] Minting NFT on zkBNB
+- [x] Transfer NFT on zkBNB
 - [] View sell orders and buying NFTs
 - [] Creating and cancelling sell orders
 
