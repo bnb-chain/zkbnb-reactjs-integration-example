@@ -1,4 +1,4 @@
-import { Client } from '@bnb-chain/zkbnb-js-sdk';
+import {Client} from '@bnb-chain/zkbnb-js-sdk';
 import { Wallet } from '@bnb-chain/zkbnb-js-l1-sdk';
 import { ZkCrypto } from '@bnb-chain/zkbnb-js-sdk/zkCrypto/web';
 import { ethers } from 'ethers';
@@ -38,6 +38,7 @@ export default class L2Client {
     this.seed = await this.getSeed(); // you can save in local storage
     this.l1Address = await this.l1Wallet.address();
     this.zkCrypto = await ZkCrypto();
+
     if (network === 'bsc') {
       this.client = new Client('https://api.zkbnbchain.org');
     } else if (network === 'bscTestnet') {
