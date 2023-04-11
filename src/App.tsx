@@ -5,6 +5,7 @@ import Bridge from './Bridge';
 import { ethers } from 'ethers';
 import L2Client from './l2Client';
 import { Network } from '@bnb-chain/zkbnb-js-l1-sdk/dist/types';
+import Marketplace from './Marketplace';
 
 const App = () => {
   // initialise SDK
@@ -119,6 +120,9 @@ const App = () => {
   function handleTabs() {
     if (walletAddress) {
       switch (tab) {
+        case 'marketplace':
+          if (walletAddress === '-') return <div>Connect wallet</div>;
+          return <Marketplace zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress} />;
         case 'bridge':
         default:
           if (walletAddress === '-') return <div>Connect wallet</div>;
@@ -134,7 +138,12 @@ const App = () => {
       <div>Active wallet address: {walletAddress}</div>
       <div>BNB L1 Balance (in wei): {l1Balance}</div>
       <div>BNB L2 Balance (in wei): {l2Balance}</div>
-      {tab !== 'bridge' && <button onClick={() => setTab('bridge')}>Bridge</button>}
+      <button disabled={tab === 'bridge'} onClick={() => setTab('bridge')}>
+        Bridge
+      </button>
+      <button disabled={tab === 'marketplace'} onClick={() => setTab('marketplace')}>
+        Marketplace
+      </button>
       <br />
       <br />
       <br />

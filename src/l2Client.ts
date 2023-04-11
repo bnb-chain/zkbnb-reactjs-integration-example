@@ -109,8 +109,10 @@ export default class L2Client {
     return account;
   }
 
-  async submitTx(txType: TxType, txInfo: any) {
-    const { index: accountIndex } = await this.client.getAccountByL1Address(this.l1Address);
+  async submitTx(txType: TxType, txInfo: any, accountIndex?: number) {
+    if (!accountIndex) {
+      ({ index: accountIndex } = await this.client.getAccountByL1Address(this.l1Address));
+    }
     const { nonce } = await this.client.getNextNonce(accountIndex);
     const gasAccount = await this.client.getGasAccount();
     const pubKey = await this.getPublicKey(this.seed);
@@ -125,7 +127,7 @@ export default class L2Client {
       expired_at: Math.floor(new Date().getTime()) + 7200000,
       nonce,
     };
-    console.log(tx, 'tx', txType);
+    console.log('tx', txType, tx);
     let transaction = '';
     switch (txType) {
       case TxType.ChangePubKey:
@@ -136,6 +138,15 @@ export default class L2Client {
         break;
       case TxType.WithdrawNft:
         transaction = await this.zkCrypto.signWithdrawNft(this.seed, JSON.stringify(tx));
+        break;
+      case TxType.CreateCollection:
+        transaction = await this.zkCrypto.signCreateCollection(this.seed, JSON.stringify(tx));
+        break;
+      case TxType.MintNFT:
+        transaction = await this.zkCrypto.signMintNft(this.seed, JSON.stringify(tx));
+        break;
+      case TxType.TransferNFT:
+        transaction = await this.zkCrypto.signTransferNft(this.seed, JSON.stringify(tx));
         break;
       default: {
         throw new Error(`TxType ${txType} is not supported`);
@@ -156,14 +167,13 @@ export default class L2Client {
       account_index: accountIndex,
       l1_address: this.l1Address,
     };
-    await this.submitTx(TxType.ChangePubKey, tx);
+    await this.submitTx(TxType.ChangePubKey, tx, accountIndex);
   }
 
   async withdraw(amount: string, assetId: number, toAddress: string) {
     this.isInit();
     const parseAmount = ethers.utils.parseEther(amount).toString();
     const { index: accountIndex } = await this.client.getAccountByL1Address(this.l1Address);
-    console.log('accountIndex', accountIndex, this.l1Address, amount, assetId, toAddress, parseAmount);
     const tx = {
       from_account_index: accountIndex,
       asset_id: assetId,
@@ -171,18 +181,60 @@ export default class L2Client {
       memo: 'withdraw memo',
       to_address: toAddress,
     };
-    await this.submitTx(TxType.Withdraw, tx);
+    await this.submitTx(TxType.Withdraw, tx, accountIndex);
   }
 
   async withdrawNFT(nftId: number, toAddress: string) {
     this.isInit();
     const { index: accountIndex } = await this.client.getAccountByL1Address(this.l1Address);
-    console.log('accountIndex', accountIndex, this.l1Address, nftId, toAddress);
     const tx = {
       account_index: accountIndex,
       nft_index: nftId,
       to_address: toAddress,
     };
-    await this.submitTx(TxType.WithdrawNft, tx);
+    await this.submitTx(TxType.WithdrawNft, tx, accountIndex);
+  }
+
+  async createCollection(name: string, description: string) {
+    this.isInit();
+    const tx = {
+      name,
+      description,
+    };
+    await this.submitTx(TxType.CreateCollection, tx);
+  }
+
+  async mintNFT(nftInfo: {
+    nftCollectionId: number;
+    to: string; // address must be existed in zkbnb
+    nftContentType?: number;
+    royaltyRate?: string; // 0.1% => 0.001
+    metadata: string; // json string
+    mutableAttributes?: string; // json string
+  }) {
+    this.isInit();
+    const { index: accountIndex } = await this.client.getAccountByL1Address(this.l1Address);
+    const tx = {
+      creator_account_index: accountIndex,
+      to_l1_address: nftInfo.to,
+      nft_collection_id: nftInfo.nftCollectionId,
+      nft_content_type: nftInfo.nftContentType || 0,
+      royalty_rate: nftInfo.royaltyRate || 0,
+      meta_data: nftInfo.metadata || '',
+      mutable_attributes: nftInfo.mutableAttributes,
+    };
+    await this.submitTx(TxType.MintNFT, tx, accountIndex);
+  }
+
+  // transfer nft
+  async transferNFT(tokenId: number, to: string) {
+    this.isInit();
+    const { index: accountIndex } = await this.client.getAccountByL1Address(this.l1Address);
+    const tx = {
+      from_account_index: accountIndex,
+      nft_index: tokenId,
+      to_l1_address: to,
+    };
+    await this.submitTx(TxType.TransferNFT, tx, accountIndex);
   }
 }
