@@ -1,12 +1,14 @@
-import './App.css';
-import { Wallet, getZkBNBDefaultProvider, Provider } from '@bnb-chain/zkbnb-js-l1-sdk';
-import { useState } from 'react';
-import Bridge from './Bridge';
-import { ethers } from 'ethers';
-import L2Client from './l2Client';
-import { Network } from '@bnb-chain/zkbnb-js-l1-sdk/dist/types';
-import Marketplace from './Marketplace';
+import {Network} from '@bnb-chain/zkbnb-js-l1-sdk/dist/types';
 import {Account} from "@bnb-chain/zkbnb-js-sdk/dist/web/zk";
+import {Wallet, getZkBNBDefaultProvider, Provider} from '@bnb-chain/zkbnb-js-l1-sdk';
+import {Tabs, Descriptions} from 'antd';
+import type {TabsProps} from 'antd';
+import {useState} from 'react';
+import {ethers} from 'ethers';
+import './App.css';
+import L2Client from './l2Client';
+import Bridge from './Bridge';
+import Marketplace from './Marketplace';
 
 /**
  * Here is mainly responsible for connecting to the browser wallet,
@@ -19,6 +21,7 @@ const App = () => {
   // general
   const [tab, setTab] = useState('bridge');
   const [walletAddress, setWalletAddress] = useState('-');
+  const [isConnected, setIsConnected] = useState(false);
   const [l1Balance, setL1Balance] = useState('-');
   const [l2Balance, setL2Balance] = useState('-');
   const [activated, setActivated] = useState(false);
@@ -41,6 +44,8 @@ const App = () => {
 
     const minter = provider.getSigner(); //get Signature from Metamask wallet
     setWalletAddress(await minter.getAddress());
+    setIsConnected(true);
+
     const l1Balance = ethers.utils.formatEther(await minter.getBalance());
     setL1Balance(l1Balance.toString());
 
@@ -157,7 +162,7 @@ const App = () => {
 
     if (account && Array.isArray(account.assets)) {
       const bnb = account.assets.find((asset: { name: string }) => asset.name === 'BNB');
-      balance = (bnb && bnb.balance )? ethers.utils.formatEther(bnb.balance) : balance;
+      balance = (bnb && bnb.balance) ? ethers.utils.formatEther(bnb.balance) : balance;
     }
 
     return balance;
@@ -168,33 +173,41 @@ const App = () => {
       switch (tab) {
         case 'marketplace':
           if (walletAddress === '-') return <div>Connect wallet</div>;
-          return <Marketplace zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress} />;
+          return <Marketplace zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress}/>;
         case 'bridge':
         default:
           if (walletAddress === '-') return <div>Connect wallet</div>;
-          return <Bridge zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress} />;
+          return <Bridge zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress}/>;
       }
     }
     return null;
   }
 
+  const items: TabsProps['items'] = [
+    {
+      key: 'bridge',
+      label: `Bridge`,
+      children: <Bridge zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress}/>,
+    },
+    {
+      key: 'marketplace',
+      label: `Marketplace`,
+      children: <Marketplace zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress}/>,
+    },
+  ];
+
   return (
     <div className="App">
-      {walletAddress === '-' && <button onClick={setup}>Connect wallet</button>}
-      <div>Active wallet address: {walletAddress}</div>
-      <div>BNB L1 Balance (in wei): {l1Balance}</div>
-      <div>BNB L2 Balance (in wei): {l2Balance}</div>
+      {walletAddress === '-' ? <button onClick={setup}>Connect wallet</button> :
+        <Descriptions title="Base Info" layout="vertical">
+          <Descriptions.Item label="Active wallet address:">{walletAddress}</Descriptions.Item>
+          <Descriptions.Item label="BNB L1 Balance (in wei):">{l1Balance}</Descriptions.Item>
+          <Descriptions.Item label="BNB L2 Balance (in wei):">{l2Balance}</Descriptions.Item>
+        </Descriptions>
+      }
 
-      <button disabled={tab === 'bridge'} onClick={() => setTab('bridge')}>
-        Bridge
-      </button>
-      <button disabled={tab === 'marketplace'} onClick={() => setTab('marketplace')}>
-        Marketplace
-      </button>
-      <br />
-      <br />
-      <br />
-      {handleTabs()}
+      {isConnected ? <Tabs defaultActiveKey="bridge" items={items}/> : <div>Please link your wallet first</div>}
+
     </div>
   );
 };

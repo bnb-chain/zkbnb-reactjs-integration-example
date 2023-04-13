@@ -2,7 +2,7 @@
 This is a skeleton React app for the purpose of providing code examples for using zkBNB. It covers:
 - [x] View wallet L1 And L2 BNB balance
 - [x] Depositing and withdrawing BNB and NFTs
-- [] Depositing and withdrawing BEP20
+- [x] Depositing and withdrawing BEP20(pending test)
 - [x] Create collection on zkBNB
 - [x] Minting NFT on zkBNB
 - [x] Transfer NFT on zkBNB

@@ -238,4 +238,6 @@ export default class L2Client {
     };
     await this.submitTx(TxType.TransferNFT, tx, accountIndex);
   }
+
+
 }
