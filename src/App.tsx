@@ -1,10 +1,10 @@
-import {Network} from '@bnb-chain/zkbnb-js-l1-sdk/dist/types';
-import {Account} from "@bnb-chain/zkbnb-js-sdk/dist/web/zk";
-import {Wallet, getZkBNBDefaultProvider, Provider} from '@bnb-chain/zkbnb-js-l1-sdk';
-import {Tabs, Descriptions} from 'antd';
-import type {TabsProps} from 'antd';
-import {useState} from 'react';
-import {ethers} from 'ethers';
+import { Network } from '@bnb-chain/zkbnb-js-l1-sdk/dist/types';
+import { Account } from '@bnb-chain/zkbnb-js-sdk/dist/web/zk';
+import { Wallet, getZkBNBDefaultProvider, Provider } from '@bnb-chain/zkbnb-js-l1-sdk';
+import { Tabs, Descriptions } from 'antd';
+import type { TabsProps } from 'antd';
+import { useState } from 'react';
+import { ethers } from 'ethers';
 import './App.css';
 import L2Client from './l2Client';
 import Bridge from './Bridge';
@@ -162,7 +162,7 @@ const App = () => {
 
     if (account && Array.isArray(account.assets)) {
       const bnb = account.assets.find((asset: { name: string }) => asset.name === 'BNB');
-      balance = (bnb && bnb.balance) ? ethers.utils.formatEther(bnb.balance) : balance;
+      balance = bnb && bnb.balance ? ethers.utils.formatEther(bnb.balance) : balance;
     }
 
     return balance;
@@ -173,11 +173,11 @@ const App = () => {
       switch (tab) {
         case 'marketplace':
           if (walletAddress === '-') return <div>Connect wallet</div>;
-          return <Marketplace zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress}/>;
+          return <Marketplace zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress} />;
         case 'bridge':
         default:
           if (walletAddress === '-') return <div>Connect wallet</div>;
-          return <Bridge zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress}/>;
+          return <Bridge zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress} />;
       }
     }
     return null;
@@ -187,27 +187,28 @@ const App = () => {
     {
       key: 'bridge',
       label: `Bridge`,
-      children: <Bridge zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress}/>,
+      children: <Bridge zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress} />,
     },
     {
       key: 'marketplace',
       label: `Marketplace`,
-      children: <Marketplace zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress}/>,
+      children: <Marketplace zkWallet={zkWallet} l2Client={l2Client} walletAddress={walletAddress} />,
     },
   ];
 
   return (
     <div className="App">
-      {walletAddress === '-' ? <button onClick={setup}>Connect wallet</button> :
+      {walletAddress === '-' ? (
+        <button onClick={setup}>Connect wallet</button>
+      ) : (
         <Descriptions title="Base Info" layout="vertical">
           <Descriptions.Item label="Active wallet address:">{walletAddress}</Descriptions.Item>
           <Descriptions.Item label="BNB L1 Balance (in wei):">{l1Balance}</Descriptions.Item>
           <Descriptions.Item label="BNB L2 Balance (in wei):">{l2Balance}</Descriptions.Item>
         </Descriptions>
-      }
+      )}
 
-      {isConnected ? <Tabs defaultActiveKey="bridge" items={items}/> : <div>Please link your wallet first</div>}
-
+      {isConnected ? <Tabs defaultActiveKey="bridge" items={items} /> : <div>Please link your wallet first</div>}
     </div>
   );
 };
