@@ -1,4 +1,4 @@
-import {Client} from '@bnb-chain/zkbnb-js-sdk';
+import { Client } from '@bnb-chain/zkbnb-js-sdk';
 import { Wallet } from '@bnb-chain/zkbnb-js-l1-sdk';
 import { ZkCrypto } from '@bnb-chain/zkbnb-js-sdk/zkCrypto/web';
 import { ethers } from 'ethers';
@@ -158,7 +158,13 @@ export default class L2Client {
     const transactionObj = JSON.parse(transaction);
     transactionObj.L1Sig = l1Sig.signature;
 
-    await this.client.sendRawTx({ txType, txInfo: JSON.stringify(transactionObj) });
+    const result = await this.client.sendRawTx({ txType, txInfo: JSON.stringify(transactionObj) });
+    console.log('Submit tx result:', result);
+    if (!result || result.code !== 100) {
+      alert((result && result.message) || 'Submit transaction failure');
+    } else {
+      alert('Success');
+    }
   }
 
   async activateAccount() {
@@ -238,6 +244,4 @@ export default class L2Client {
     };
     await this.submitTx(TxType.TransferNFT, tx, accountIndex);
   }
-
-
 }

@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@bnb-chain/zkbnb-js-l1-sdk": "^1.0.1",
-    "@bnb-chain/zkbnb-js-sdk": "^4.4.1",
+    "@bnb-chain/zkbnb-js-sdk": "^4.5.0",
     "antd": "^5.4.2",
     "ethers": "^5.4.6",
     "react": "^18.2.0",
